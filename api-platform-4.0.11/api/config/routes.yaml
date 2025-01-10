@@ -6,7 +6,11 @@
 api_login:
     path: /auth
     methods: ['POST']
-user_create:
+api_user_create:
     path: /users
     controller: App\Controller\UserController::create
     methods: ['POST']
+api_user_get:
+    path: /user
+    controller: App\Controller\UserController::get
+    methods: ['GET']

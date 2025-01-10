@@ -6,12 +6,14 @@ use App\Entity\Address;
 use App\Entity\User;
 use App\Form\SinginType;
 use App\Repository\UserRepository;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserController
 {
@@ -19,6 +21,8 @@ class UserController
         private FormFactoryInterface $formFactory,
         private UserPasswordHasherInterface $userPasswordHasher,
         private UserRepository $userRepository,
+        private TokenStorageInterface $tokenStorage,
+        private JWTTokenManagerInterface $jWTTokenManager
     ) {
     }
     public function create(Request $request):JsonResponse {
@@ -41,5 +45,10 @@ class UserController
         $this->userRepository->create($user);
 
         return new JsonResponse(["response" => "ok"]);
+    }
+
+    public function get(): void {
+        $decodedJwtToken = $this->jWTTokenManager->decode($this->tokenStorage->getToken());
+        dd($decodedJwtToken);
     }
 }
