@@ -1,0 +1,11 @@
+api_login:
+    path: /auth
+    methods: ['POST']
+api_user_create:
+    path: /users
+    controller: App\Controller\UserController::create
+    methods: ['POST']
+api_user_profile:
+    path: /profile
+    controller: App\Controller\UserController::get
+    methods: ['GET']

@@ -19,13 +19,13 @@ class AddressType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(message: 'address:vieullier une address'),
-                    new Regex(pattern: '/^[0-9-]{1,} [a-zA-z]/')
+                    new Regex(pattern: '/^[0-9-]{1,} [a-zA-z]/', message: 'address:vieullier rentre une address valide')
                 ]
             ])->add('city', TextType::class, [
                 'required' => true,
                 'constraints' => [
                     new NotBlank(message: 'city:vieullier saisire un nom de ville'),
-                    new Regex('/[A-z]{1,}/',message: "city:ce n'est pas un nom correct")
+                    new Regex('/^[A-z]{1,}/',message: "city:ce n'est pas un nom correct")
                 ],
             ])->add('country', TextType::class, [
                 'constraints' => [

@@ -5,6 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\OneToOne;
+
 #[ApiResource]
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 class Address
@@ -15,6 +18,8 @@ class Address
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[OneToOne(targetEntity: Address::class)]
+    #[JoinColumn(name: 'address_id', referencedColumnName: 'id')]
     private ?string $address = null;
 
     #[ORM\Column(length: 255)]

@@ -16,13 +16,14 @@ class SinginType extends AbstractType
     {
         $builder->add('email', TextType::class, [
             'constraints' => [
-                new Email(message:"email n'est pas bon"),
+                new Email(message:"email:email n'est pas bon"),
                 ]
             ])->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'required' => true,
                 'first_name' => "password",
                 'second_name' => "repeatPassword",
+                'invalid_message' => "password: le mot de pass ne sont pas le meme",
                 'constraints' => [
                     new NotBlank(message: 'password:vieullier saisire un mot de pass'),
                 ]
