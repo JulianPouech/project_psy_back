@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[Assert\NotBlank]
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, unique:true)]
     private ?string $email = null;
 
     /**
@@ -45,6 +45,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     * @var string the plain password
     **/
     private ?string $plainPassword = null;
+
+    private ?string $oldPassword = null;
 
     #[ORM\OneToOne(targetEntity: Address::class)]
     #[ORM\JoinColumn(name: 'address_id', referencedColumnName: 'id')]
@@ -139,5 +141,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getVisible(): array
+    {
+        return ['email' => $this->email,
+            'address' => $this->getAddress()->getVisible()
+        ];
+    }
+
+    public function setOldPassword(string $oldPassword): void {
+        $this->oldPassword = $oldPassword;
+    }
+
+    public function getOldPassword(): ?string {
+        return $this->oldPassword;
     }
 }

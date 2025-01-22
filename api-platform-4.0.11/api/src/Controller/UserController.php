@@ -2,24 +2,21 @@
 
 namespace App\Controller;
 
-use App\Entity\Address;
 use App\Entity\User;
+use App\Form\ChangePasswordType;
 use App\Form\SinginType;
+use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Security\JwtSecurity;
+use App\Trait\TraitErrorForm;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\VarExporter\Hydrator;
-use Symfony\Component\VarExporter\Internal\Hydrator as SymfonyHydrator;
 
-class UserController
+class UserController implements ControllerInterface
 {
     public function __construct(
         private FormFactoryInterface $formFactory,
@@ -27,14 +24,16 @@ class UserController
         private UserRepository $userRepository,
         private TokenStorageInterface $tokenStorage,
         private JWTTokenManagerInterface $jWTTokenManager,
-        private SymfonyHydrator $hydrator
+        private JwtSecurity $jwtSecurity,
     ) {
     }
+    use TraitErrorForm;
+
     public function create(Request $request):JsonResponse {
-        $body = json_decode(strip_tags($request->getContent()), true);
+        $payload = json_decode(strip_tags($request->getContent()), true);
         $user = new User();
-        $form  = $this->formFactory->createBuilder(SinginType::class,$user)->getForm();
-        $form->submit($body);
+        $form  = $this->formFactory->create(SinginType::class,$user);
+        $form->submit($payload);
 
         if(!$form->isValid())
         {
@@ -44,32 +43,81 @@ class UserController
                array_push($errors,$error->getMessage());
             }
 
-            return new JsonResponse(['errors' => $errors]);
+            return new JsonResponse($this->errorsFormToJson($form),status: 406);
         }
 
         $this->userRepository->create($user);
 
-        return new JsonResponse(["response" => "ok"]);
+        return new JsonResponse(["response" => "created"], status: 201);
     }
 
-    public function get(): JsonResponse {
+    public function select(int $id): JsonResponse {
 
-        $token = $this->tokenStorage->getToken();
+        $user = $this->jwtSecurity->getUser();
 
-        if(!$token instanceof TokenInterface)
+        return new JsonResponse($user->getVisible());
+    }
+
+    public function update(Request $request, int $id): JsonResponse {
+        $user = $this->jwtSecurity->getUser();
+
+        if($user->getId() !== $id)
         {
-            return new JsonResponse(status: 201);
+            return new JsonResponse(status:403);
         }
 
-        $decodedJwtToken = $this->jWTTokenManager->decode($this->tokenStorage->getToken());
-        $user = $this->userRepository->findOneByEmail($decodedJwtToken['username']);
-        new DoctrineHy
-        dd($address);
-        return new JsonResponse([
-            "email" => $user->getEmail(),
-            "address" => $user->getAddress()
-        ]);
+        $payload = json_decode(strip_tags($request->getContent()), true);
+
+        if(isset($payload['changePassword']))
+        {
+            return $this->updatePassword($user,$payload['changePassword']);
+        } else if (!isset($payload['email'])){
+            return new JsonResponse(['errors' => 'app_error_update_user']);
+        }
+
+        $form = $this->formFactory->create(UserType::class, $user);
+        $form->submit($payload);
+
+        if(!$form->isValid())
+        {
+            return new JsonResponse($this->errorsFormToJson($form), status:406);
+        }
+
+        $this->userRepository->upgradeUser($user);
+
+        return new JsonResponse(['response' => 'ok']);
     }
 
+    public function delete(): JsonResponse
+    {
+        return new JsonResponse(['response' => 'ok']);
+    }
 
+    public function index(): JsonResponse
+    {
+        return new JsonResponse(['response' => 'ok']);
+    }
+
+    private function updatePassword(User $user, Array $data): JsonResponse {
+        $form = $this->formFactory->create(ChangePasswordType::class,$user);
+        $form->submit($data);
+        $errors = [];
+
+
+        if(!$form->isValid())
+        {
+            return new JsonResponse($this->errorsFormToJson($form), status:406);
+        }
+
+        if($user->getOldPassword() === $user->getPlainPassword())
+        {
+            array_push($errors,'app_plain_password_same_old');
+
+            return new JsonResponse($errors, status:406);
+        }
+
+        $hasedPassword = $this->userPasswordHasher->hashPassword($user,$user->getPlainPassword());
+        $this->userRepository->upgradePassword($user,$hasedPassword);
+        return new JsonResponse(['response'=>'password update']);
+    }
 }

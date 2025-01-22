@@ -18,24 +18,24 @@ class AddressType extends AbstractType
         $builder->add('address', TextType::class, [
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(message: 'address:vieullier une address'),
-                    new Regex(pattern: '/^[0-9-]{1,} [a-zA-z]/', message: 'address:vieullier rentre une address valide')
+                    new NotBlank(message: '{{ label }}:app_address_blank'),
+                    new Regex(pattern: '/^[0-9-]{1,} [a-zA-z]/', message: '{{ label }}:app_address_pattern')
                 ]
             ])->add('city', TextType::class, [
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(message: 'city:vieullier saisire un nom de ville'),
-                    new Regex('/^[A-z]{1,}/',message: "city:ce n'est pas un nom correct")
+                    new NotBlank(message: '{{ label }}:app_city_blank'),
+                    new Regex('/^[A-z]{1,}/',message: "{{ label }}:app_city_pattern")
                 ],
             ])->add('country', TextType::class, [
                 'constraints' => [
-                    new Country(message: 'country:le nom du pays nes pas bon'),
+                    new Country(message: '{{ label }}:app_country_not_country'),
                 ]
             ])->add('postalCode', TextType::class, [
                 'required' => true,
                 'constraints' => [
-                    new NotBlank(message: 'postalCode:vieullier saisire un code postal'),
-                    new Regex('/^[A-z0-9]{1,}/',message: "postalCode:le code postal n'est pas bon")
+                    new NotBlank(message: '{{ label }}:app_postal_code_blank'),
+                    new Regex('/^[A-z0-9]{1,}/',message: "{{ label }}:app_postal_code_pattern")
                 ]
             ])
         ;

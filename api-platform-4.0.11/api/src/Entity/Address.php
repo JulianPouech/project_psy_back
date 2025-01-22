@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping\OneToOne;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
-class Address
+class Address implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -80,4 +80,17 @@ class Address
     public function getCountry(): ?string {
         return $this->country;
     }
+
+    /**
+    * @return array<string,string>
+    **/
+    public function getVisible(): array
+    {
+        return ['city' => $this->city,
+            'address' => $this->address,
+            'postalCode' => $this->postalCode,
+            'country' => $this->country
+        ];
+    }
+
 }

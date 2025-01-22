@@ -49,4 +49,9 @@ class AddressRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function update(Address $address): void {
+        $this->getEntityManager()->persist($address);
+        $this->getEntityManager()->flush();
+    }
 }

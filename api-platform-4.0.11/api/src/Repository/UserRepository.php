@@ -2,11 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\Address;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -18,7 +19,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 {
     public function __construct(
         ManagerRegistry $registry,
-        private UserPasswordHasherInterface $userPasswordHasher
+        private UserPasswordHasherInterface $userPasswordHasher,
+        private JWTTokenManagerInterface $jWTTokenManager,
+        private TokenStorageInterface $tokenStorage
     )
     {
         parent::__construct($registry, User::class);
@@ -63,14 +66,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
 
-    /**
-    * @param array
-    **/
     public function create(User $user): void
     {
         $user->setPassword($this->userPasswordHasher->hashPassword($user,$user->getPlainPassword()));
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->persist($user->getAddress());
         $this->getEntityManager()->flush();
+    }
+
+    public function upgradeUser(User $user): void {
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+    }
+
+    public function findOneByJwt(): User{
+        $payload = $this->jWTTokenManager->decode($this->tokenStorage->getToken());
+        return $this->findOneByEmail($payload['username']);
     }
 }

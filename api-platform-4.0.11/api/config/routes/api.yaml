@@ -1,11 +1,29 @@
 api_login:
     path: /auth
     methods: ['POST']
+
 api_user_create:
     path: /users
     controller: App\Controller\UserController::create
     methods: ['POST']
+
 api_user_profile:
-    path: /profile
-    controller: App\Controller\UserController::get
+    path: /users/{id}
+    controller: App\Controller\UserController::select
     methods: ['GET']
+
+api_user_update:
+    path: /users/{id}
+    controller: App\Controller\UserController::update
+    methods: ['PATCH']
+
+api_user_logout:
+    path: /logout
+    methods: ['GET']
+    controller: App\Controller\UserController::logout
+
+api_address_update:
+    path: /address/{id}
+    controller: App\Controller\AddressController::update
+    methods: ['PATCH']
+
