@@ -52,6 +52,16 @@ services:
       start_period: 60s
     volumes:
       - database_data:/var/lib/postgresql/data:rw
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - "PGADMIN_DEFAULT_EMAIL=test@exemaple.wip"
+      - "PGADMIN_DEFAULT_PASSWORD=test"
+    depends_on:
+      - database
+    ports:
+      - 8080:80
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./api/docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
@@ -63,8 +73,8 @@ services:
 volumes:
   caddy_data:
   caddy_config:
-###> doctrine/doctrine-bundle ###
   database_data:
+###> doctrine/doctrine-bundle ###
 ###< doctrine/doctrine-bundle ###
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
