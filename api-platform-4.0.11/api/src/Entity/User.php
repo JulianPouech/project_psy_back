@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     /**
      * @var Collection<int, Patient>
      */
-    #[ORM\ManyToMany(targetEntity: Patient::class)]
+    #[ORM\ManyToMany(targetEntity: Patient::class, inversedBy: 'users')]
     private Collection $patients;
 
     public function __construct()

@@ -16,13 +16,13 @@ class PatientType extends AbstractType
     {
         $builder->add('lastName', TextType::class, [
                 'constraints' => [
-                    new Regex(pattern: '\^[A-Z][a-z]{1,}$\g', message: '{{ label }}:2'),
+                    new Regex(pattern: '/^[A-Z][a-z]{1,}$/', message: '{{ label }}:2'),
                     new NotBlank(message: '{{ label }}:1'),
                 ]
             ])
             ->add('firstName', TextType::class, [
                 'constraints' => [
-                    new Regex(pattern: '\^[A-Z][a-z]{1,}$\g', message: '{{ label }}:2'),
+                    new Regex(pattern: '/^[A-Z][a-z]{1,}$/', message: '{{ label }}:2'),
                     new NotBlank(message: '{{ label }}:1'),
                 ]
             ])

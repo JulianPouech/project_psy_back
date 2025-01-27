@@ -3,15 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Patient;
+use App\Form\PatientType;
 use App\Repository\PatientRepository;
+use App\Security\JwtSecurity;
+use App\Trait\TraitErrorForm;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class PatientController implements ControllerInterface
 {
+    use TraitErrorForm;
+
     public function __construct(private PatientRepository $patientRepository,
-        private FormFactoryInterface $formFactory
+        private FormFactoryInterface $formFactory,
+        private JwtSecurity $jwtSecurity
     ) {
     }
 
@@ -19,8 +25,9 @@ class PatientController implements ControllerInterface
     {
         /** @var ?Patient*/
         $patient = $this->patientRepository->findOneBy(["id" => $id]);
-        $payload = json_decode(strip_tags($request->getContent()), true);
+        $currentUser = $this->jwtSecurity->getUser();
 
+        $payload = json_decode(strip_tags($request->getContent()), true);
 
         return new JsonResponse(status: 200);
     }
@@ -28,6 +35,14 @@ class PatientController implements ControllerInterface
     public function create(Request $request): JsonResponse
     {
         $payload = json_decode(strip_tags($request->getContent()), true);
+
+        $patient = new Patient();
+        $form = $this->formFactory->create(PatientType::class, $patient);
+        $form->submit($payload);
+
+        if(!$form->isValid()){
+            return new JsonResponse($this->errorsFormToJson($form));
+        }
 
         return new JsonResponse(status: 200);
     }

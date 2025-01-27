@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,6 +26,13 @@ class Patient implements EntityInterface
     #[ORM\Column(type: Types::STRING,length:16)]
     private ?string $phone = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'patients')]
+    private Collection $users;
+
+    public function __construct() {
+        $this->users = new ArrayCollection();
+    }
+
     public function getVisible(): array
     {
         return [
@@ -33,11 +42,11 @@ class Patient implements EntityInterface
         ];
     }
 
-    public function getid():?int {
+    public function getId():?int {
         return $this->id;
     }
 
-    public function setid(?int $id):void {
+    public function setId(?int $id):void {
         $this->id = $id;
     }
 
@@ -45,7 +54,7 @@ class Patient implements EntityInterface
         return $this->firstName;
     }
 
-    public function setFirstName(?string $firstName):void {
+    public function setFirstName(?string $firstName): void {
         $this->firstName = $firstName;
     }
 
@@ -53,7 +62,7 @@ class Patient implements EntityInterface
         return $this->lastName;
     }
 
-    public function setLastName(?string $lastName):void {
+    public function setLastName(?string $lastName): void {
         $this->lastName = $lastName;
     }
 
@@ -61,8 +70,20 @@ class Patient implements EntityInterface
         return $this->phone;
     }
 
-    public function setPhone(?string $phone):void {
+    public function setPhone(?string $phone): void {
         $this->phone = $phone;
+    }
+
+    public function addUser(User $user): void {
+        $this->users->add($user);
+    }
+
+    public function removeUser(User $user): void {
+        $this->users->removeElement($user);
+    }
+
+    public function getUsers():Collection {
+        return $this->users;
     }
 
     public function getFullName(): ?string {

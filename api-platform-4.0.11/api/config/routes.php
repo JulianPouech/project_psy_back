@@ -4,7 +4,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function(RoutingConfigurator $routes)
 {
-    $routes->import('./routes/api.php')->prefix('/api');
+    $routes->import('./routes/api/api.php')->prefix('/api');
 };
 #controllers:
     #resource:
