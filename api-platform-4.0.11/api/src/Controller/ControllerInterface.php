@@ -11,9 +11,9 @@ interface ControllerInterface
 
     public function create(Request $request): JsonResponse;
 
-    public function delete(): JsonResponse;
+    public function delete(int $id): JsonResponse;
 
-    public function index(): JsonResponse;
+    public function index(Request $request): JsonResponse;
 
     public function select(int $id): JsonResponse;
 }

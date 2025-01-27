@@ -54,7 +54,7 @@ class AddressController implements ControllerInterface
         return new JsonResponse(['response' => 'ok']);
     }
 
-    public function delete(): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         if($this->jwtSecurity->isGranted('ROLE_ADMIN'))
         {
@@ -63,7 +63,7 @@ class AddressController implements ControllerInterface
 
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         return new JsonResponse(['response' => 'ok']);
     }

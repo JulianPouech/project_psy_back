@@ -1,9 +1,0 @@
-#controllers:
-    #resource:
-    #    path: ../src/Controller/
-    #    namespace: App\Controller
-    #type: attribute
-api_route:
-    resource: './routes/api.yaml'
-    prefix: /api
-

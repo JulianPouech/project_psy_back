@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -51,6 +53,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     #[ORM\OneToOne(targetEntity: Address::class)]
     #[ORM\JoinColumn(name: 'address_id', referencedColumnName: 'id')]
     private ?Address $address = null;
+
+    /**
+     * @var Collection<int, Patient>
+     */
+    #[ORM\ManyToMany(targetEntity: Patient::class)]
+    private Collection $patients;
+
+    public function __construct()
+    {
+        $this->patients = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -156,5 +169,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     public function getOldPassword(): ?string {
         return $this->oldPassword;
+    }
+
+    /**
+     * @return Collection<int, Patient>
+     */
+    public function getPatients(): Collection
+    {
+        return $this->patients;
+    }
+
+    public function addPatient(Patient $patient): static
+    {
+        if (!$this->patients->contains($patient)) {
+            $this->patients->add($patient);
+        }
+
+        return $this;
+    }
+
+    public function removePatient(Patient $patient): static
+    {
+        $this->patients->removeElement($patient);
+
+        return $this;
     }
 }

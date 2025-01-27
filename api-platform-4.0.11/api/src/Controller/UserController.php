@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController implements ControllerInterface
 {
@@ -88,12 +89,14 @@ class UserController implements ControllerInterface
         return new JsonResponse(['response' => 'ok']);
     }
 
-    public function delete(): JsonResponse
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(int $id): JsonResponse
     {
+
         return new JsonResponse(['response' => 'ok']);
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         return new JsonResponse(['response' => 'ok']);
     }
