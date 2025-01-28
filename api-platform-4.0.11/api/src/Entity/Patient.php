@@ -23,11 +23,15 @@ class Patient implements EntityInterface
     #[ORM\Column(type: Types::STRING,length:128)]
     private ?string $lastName = null;
 
-    #[ORM\Column(type: Types::STRING,length:16)]
+    #[ORM\Column(type: Types::STRING,length:16,nullable: true)]
     private ?string $phone = null;
 
+    /**
+     * @var Collection<int, User>
+     */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'patients')]
     private Collection $users;
+
 
     public function __construct() {
         $this->users = new ArrayCollection();
@@ -36,9 +40,10 @@ class Patient implements EntityInterface
     public function getVisible(): array
     {
         return [
-            'phone' => $this->phone,
+            'id' => $this->id,
+            'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            'firstName' => $this->firstName
+            'phone' => $this->phone
         ];
     }
 
@@ -74,17 +79,7 @@ class Patient implements EntityInterface
         $this->phone = $phone;
     }
 
-    public function addUser(User $user): void {
-        $this->users->add($user);
-    }
 
-    public function removeUser(User $user): void {
-        $this->users->removeElement($user);
-    }
-
-    public function getUsers():Collection {
-        return $this->users;
-    }
 
     public function getFullName(): ?string {
         if(null === $this->firstName || $this->lastName === null)
@@ -94,4 +89,37 @@ class Patient implements EntityInterface
 
         return $this->firstName.' '.$this->lastName;
     }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removePatient($this);
+        }
+
+        return $this;
+    }
+
+    public function clearUsers()
+    {
+        $this->users->clear();
+    }
+
 }

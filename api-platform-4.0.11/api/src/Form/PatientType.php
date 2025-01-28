@@ -28,7 +28,7 @@ class PatientType extends AbstractType
             ])
             ->add('phone', TextType::class, [
                 'constraints' => [
-                    new Regex(pattern: '/^[0-9]{10,12}$/g', message: '{{ label }}:2'),
+                    new Regex(pattern: '/^[0-9]{10,12}$/', message: '{{ label }}:2'),
                 ]
             ])
         ;

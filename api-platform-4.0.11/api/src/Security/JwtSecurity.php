@@ -20,7 +20,7 @@ final class JwtSecurity
             $user = $this->userRepository->findOneByJwt();
         }
 
-        return array_search($roleName, $user->getRoles()) === $roleName;
+        return array_search($roleName, $user->getRoles()) !== false;
     }
 
     public function getUser(): User {

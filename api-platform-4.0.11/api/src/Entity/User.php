@@ -58,8 +58,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
      * @var Collection<int, Patient>
      */
     #[ORM\ManyToMany(targetEntity: Patient::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'users_patients')]
     private Collection $patients;
 
+    /**
+     * @var Collection<int, Patient>
+     */
     public function __construct()
     {
         $this->patients = new ArrayCollection();
@@ -159,7 +163,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function getVisible(): array
     {
         return ['email' => $this->email,
-            'address' => $this->getAddress()->getVisible()
+            'address' => $this->getAddress()?->getVisible()
         ];
     }
 
@@ -194,4 +198,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
         return $this;
     }
+
+
 }

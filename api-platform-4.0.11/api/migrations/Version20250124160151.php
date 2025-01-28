@@ -24,7 +24,7 @@ final class Version20250124160151 extends AbstractMigration
             id SERIAL,
             first_name VARCHAR(128) NOT NULL,
             last_name VARCHAR(128) NOT NULL,
-            phone VARCHAR(16) NOT NULL,
+            phone VARCHAR(16),
             PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE users_patients (
             user_id INT NOT NULL,
@@ -41,6 +41,6 @@ final class Version20250124160151 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP TABLE users_patients');
-        $this->addSql('DROP TABLE patient');
+        $this->addSql('DROP TABLE patients');
     }
 }
