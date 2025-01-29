@@ -6,7 +6,7 @@ use App\Entity\Patient;
 use App\Form\PatientType;
 use App\Repository\PatientRepository;
 use App\Security\JwtSecurity;
-use App\Trait\TraitErrorForm;
+use App\Trait\ErrorFormTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PatientController implements ControllerInterface
 {
-    use TraitErrorForm;
+    use ErrorFormTrait;
 
     public function __construct(private PatientRepository $patientRepository,
         private FormFactoryInterface $formFactory,

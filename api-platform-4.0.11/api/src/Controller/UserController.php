@@ -8,7 +8,7 @@ use App\Form\SinginType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Security\JwtSecurity;
-use App\Trait\TraitErrorForm;
+use App\Trait\ErrorFormTrait;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,7 +28,7 @@ class UserController implements ControllerInterface
         private JwtSecurity $jwtSecurity,
     ) {
     }
-    use TraitErrorForm;
+    use ErrorFormTrait;
 
     public function create(Request $request):JsonResponse {
         $payload = json_decode(strip_tags($request->getContent()), true);

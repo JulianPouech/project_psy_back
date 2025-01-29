@@ -93,4 +93,18 @@ class Address implements EntityInterface
         ];
     }
 
+    /**
+    * use on query builder on select
+    **/
+    public static function select(string $alias): array
+    {
+        return [
+            $alias.'.id',
+            $alias.'.city',
+            $alias.'.address',
+            $alias.'.postalCode',
+            $alias.'.country'
+        ];
+
+    }
 }
