@@ -83,4 +83,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $payload = $this->jWTTokenManager->decode($this->tokenStorage->getToken());
         return $this->findOneByEmail($payload['username']);
     }
+
+    public function getAll(int $pages = 0): mixed
+    {
+        return $this->createQueryBuilder('u')
+            ->select(User::select('u'))
+            ->setMaxResults(20)
+            ->setFirstResult($pages*20)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function delete(User $user): void
+    {
+        $this->getEntityManager()->remove($user);
+    }
 }

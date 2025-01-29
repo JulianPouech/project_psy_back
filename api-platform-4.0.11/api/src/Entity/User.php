@@ -199,5 +199,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         return $this;
     }
 
+    public static function select(string $alias): array
+    {
+        return [
+            $alias.'.id',
+            $alias.'.email'
+        ];
+    }
+
 
 }

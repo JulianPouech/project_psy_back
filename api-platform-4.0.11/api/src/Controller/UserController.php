@@ -54,7 +54,19 @@ class UserController implements ControllerInterface
 
     public function select(int $id): JsonResponse {
 
-        $user = $this->jwtSecurity->getUser();
+        $currentUser = $this->jwtSecurity->getUser();
+
+        if($this->jwtSecurity->isGranted('ROLE_USER',$currentUser) && $currentUser->getId() === $id)
+        {
+            return new JsonResponse(status: 403);
+        }
+
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+
+        if(!$user instanceof User)
+        {
+            return new JsonResponse(status: 404);
+        }
 
         return new JsonResponse($user->getVisible());
     }
@@ -92,13 +104,31 @@ class UserController implements ControllerInterface
     #[IsGranted('ROLE_ADMIN')]
     public function delete(int $id): JsonResponse
     {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
 
+        if(!$user instanceof User)
+        {
+            return new JsonResponse(status: 404);
+        }
+
+        $this->userRepository->delete($user);
         return new JsonResponse(['response' => 'ok']);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     public function index(Request $request): JsonResponse
     {
-        return new JsonResponse(['response' => 'ok']);
+        $payload = json_decode(strip_tags($request->getContent()), true);
+        $pages = $payload['pages']??0;
+        $pages-1;
+
+        if($pages < 0)
+        {
+            $pages=0;
+        }
+        $users = $this->userRepository->getAll($pages);
+
+        return new JsonResponse(['users' => $users]);
     }
 
     private function updatePassword(User $user, Array $data): JsonResponse {
