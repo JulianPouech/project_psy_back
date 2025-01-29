@@ -4,7 +4,7 @@ namespace App\Trait;
 
 use Symfony\Component\Form\FormInterface;
 
-trait TraitErrorForm
+trait ErrorFormTrait
 {
     /**
      * @return array<string,array>

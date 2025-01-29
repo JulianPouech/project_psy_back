@@ -54,4 +54,15 @@ class AddressRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($address);
         $this->getEntityManager()->flush();
     }
+
+    public function getAll(int $pages = 0): mixed
+    {
+        return $this->createQueryBuilder('a')
+            ->select(Address::select('a'))
+            ->setMaxResults(20)
+            ->setFirstResult($pages*20)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

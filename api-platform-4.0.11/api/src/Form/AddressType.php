@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Address;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,6 +47,9 @@ class AddressType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Address::class,
+            'constraints' => [
+                new UniqueEntity(['address','city','postalCode'])
+            ]
         ]);
     }
 
