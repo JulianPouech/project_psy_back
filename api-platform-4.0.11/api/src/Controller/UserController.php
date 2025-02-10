@@ -56,7 +56,7 @@ class UserController implements ControllerInterface
 
         $currentUser = $this->jwtSecurity->getUser();
 
-        if($this->jwtSecurity->isGranted('ROLE_USER',$currentUser) && $currentUser->getId() === $id)
+        if($this->jwtSecurity->isGranted('ROLE_USER',$currentUser) && $currentUser->getId() !== $id)
         {
             return new JsonResponse(status: 403);
         }

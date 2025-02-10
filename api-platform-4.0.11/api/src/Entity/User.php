@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,7 +17,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 #[ApiResource(operations: [
     new Post(routeName: "api_user_create"),
-    new Get(routeName: "api_user_profile")
+    new Get(routeName: "api_user_select"),
+    new Patch(routeName: "api_user_update"),
+    new GetCollection(routeName: "api_user_index"),
+    new Delete(routeName: "api_user_delete"),
     ]
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
