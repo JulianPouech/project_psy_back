@@ -56,12 +56,16 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - "PGADMIN_DEFAULT_EMAIL=test@exemaple.wip"
-      - "PGADMIN_DEFAULT_PASSWORD=test"
+      - "PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}"
+      - "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}"
     depends_on:
       - database
     ports:
       - 8080:80
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./api/docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
