@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Address;
 use App\Entity\Patient;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,7 +18,8 @@ class PatientRepository extends ServiceEntityRepository
 
     public function getAll(int $pages = 0): array {
         return $this->createQueryBuilder('p')
-            ->select(['p.id','p.firstName','p.lastName','p.phone'])
+            ->leftJoin('p.address','a')
+            ->select(['p.id','p.firstName','p.lastName','p.phone','a.address'])
             ->setMaxResults(20)
             ->setFirstResult($pages*20)
             ->getQuery()
@@ -44,8 +46,9 @@ class PatientRepository extends ServiceEntityRepository
     public function findByFilter(array $filter): mixed {
         $lastName = $filter['lastName']??'';
         $firstName = $filter['firstName']??'';
+
         return $this->createQueryBuilder('p')
-            ->select(['p.firstName', 'p.lastName', 'p.phone'])
+            ->select(['p.id', 'p.firstName', 'p.lastName', 'p.phone', 'p.address'])
             ->where('p.firstName LIKE :firstName')
             ->andWhere('p.lastName LIKE :lastName')
             ->setParameter('lastName', '%'.$lastName.'%')
@@ -59,6 +62,11 @@ class PatientRepository extends ServiceEntityRepository
     {
         $entityManager = $this->getEntityManager();
         $entityManager->persist($patient);
+
+        if ($patient->getAddress() instanceof Address) {
+            $entityManager->persist($patient->getAddress());
+        }
+
         $entityManager->flush();
 
     }

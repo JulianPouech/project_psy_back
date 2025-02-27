@@ -47,7 +47,7 @@ class PatientController implements ControllerInterface
 
         if(!$form->isValid())
         {
-            return new JsonResponse($this->errorsFormToJson($form));
+            return new JsonResponse($this->errorsFormToJson($form), status:406);
         }
 
         $this->patientRepository->update($patient);
@@ -64,13 +64,13 @@ class PatientController implements ControllerInterface
         $form->submit($payload);
 
         if(!$form->isValid()){
-            return new JsonResponse($this->errorsFormToJson($form));
+            return new JsonResponse($this->errorsFormToJson($form), status:406);
         }
 
         $patient->addUser($this->jwtSecurity->getUser());
         $this->patientRepository->update($patient);
 
-        return new JsonResponse(status: 200);
+        return new JsonResponse(status: 201);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -81,6 +81,10 @@ class PatientController implements ControllerInterface
         $patient->setFirstName('firstName'.$patient->getId());
         $patient->setLastName('lastName'.$patient->getId());
         $patient->setPhone('');
+        $patient->getAddress()->setAddress('address'.$patient->getId());
+        $patient->getAddress()->setCountry('');
+        $patient->getAddress()->setPostalCode('');
+        $patient->getAddress()->setCity('');
 
         foreach($patient->getUsers() as $user)
         {
@@ -108,16 +112,20 @@ class PatientController implements ControllerInterface
             return new JsonResponse(['patients' => $patients]);
         }
 
-        $payload = json_decode(strip_tags($request->getContent()), true);
-
-        if(isset($payload['filter']))
+        $filter = [
+            'firstName' => strip_tags($request->query->get('firstName')??""),
+            'lastName' => strip_tags($request->query->get('lastName')??""),
+        ]
+        ;
+        $pages= intval(strip_tags($request->query->get('pages')??'0'));
+        if($filter['firstName'] !== "" || $filter["lastName"] !== "")
         {
-            $patients = $this->patientRepository->findByFilter($payload['filter']);
+            $patients = $this->patientRepository->findByFilter($filter);
 
             return new JsonResponse(['patients' => $patients]);
         }
 
-        $patients = $this->patientRepository->getAll($payload['pages']??0);
+        $patients = $this->patientRepository->getAll($pages);
 
 
         return new JsonResponse(['patients' => $patients],status: 200);

@@ -31,6 +31,7 @@ class PatientType extends AbstractType
                     new Regex(pattern: '/^[0-9]{10,12}$/', message: '{{ label }}:2'),
                 ]
             ])
+            ->add('address', AddressType::class)
         ;
     }
 

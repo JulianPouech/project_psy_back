@@ -32,6 +32,9 @@ class Patient implements EntityInterface
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'patients')]
     private Collection $users;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $address = null;
+
 
     public function __construct() {
         $this->users = new ArrayCollection();
@@ -43,7 +46,8 @@ class Patient implements EntityInterface
             'id' => $this->id,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            'phone' => $this->phone
+            'address' => $this->address,
+            'phone' => $this->phone,
         ];
     }
 
@@ -120,6 +124,18 @@ class Patient implements EntityInterface
     public function clearUsers()
     {
         $this->users->clear();
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): static
+    {
+        $this->address = $address;
+
+        return $this;
     }
 
 }

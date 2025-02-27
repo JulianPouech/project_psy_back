@@ -30,7 +30,8 @@ class AddressType extends AbstractType
             ])->add('country', TextType::class, [
                 'constraints' => [
                     new Country(message: '{{ label }}:app_country_not_country'),
-                ]
+                ],
+                'required' => false
             ])->add('postalCode', TextType::class, [
                 'required' => true,
                 'constraints' => [
