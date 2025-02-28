@@ -68,7 +68,7 @@ class UserController implements ControllerInterface
             return new JsonResponse(status: 404);
         }
 
-        return new JsonResponse($user->getVisible());
+        return new JsonResponse(['user' => $user->getVisible()]);
     }
 
     public function update(Request $request, int $id): JsonResponse {

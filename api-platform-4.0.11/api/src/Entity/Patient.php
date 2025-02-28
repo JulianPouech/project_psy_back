@@ -46,7 +46,7 @@ class Patient implements EntityInterface
             'id' => $this->id,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            'address' => $this->address,
+            'address' => $this->address->getVisible(),
             'phone' => $this->phone,
         ];
     }

@@ -36,10 +36,8 @@ final class Version20250109130407 extends AbstractMigration
                 address_id INT DEFAULT NULL,
                 email VARCHAR(180) NOT NULL,
                 roles JSON NOT NULL,
-                password VARCHAR(255) NOT NULL, PRIMARY KEY(id),
-                CONSTRAINT fk_address
-                    FOREIGN KEY(address_id)
-                    REFERENCES address(id))
+                password VARCHAR(255) NOT NULL,
+                PRIMARY KEY(id))
         ');
     }
 

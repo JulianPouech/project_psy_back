@@ -2,6 +2,7 @@
 
 namespace App\Fixtures;
 
+use App\Entity\Address;
 use App\Entity\Patient;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -18,13 +19,18 @@ class UserFixture extends Fixture
         $user = new User();
         $user->setEmail('gerald@example.wip');
         $user->setPassword($this->userPasswordHasher->hashPassword($user, 'test'));
-
+        $address = new Address();
+        $address->setPostalCode('codePostal1');
+        $address->setCountry('');
+        $address->setAddress('addressName1');
+        $address->setCity('cityName1');
         $firstNames = ['Gerald','Ivo','Maria'];
         foreach($firstNames as $firstName)
         {
             $patient = new Patient();
             $patient->setLastName('robotnik');
             $patient->setFirstName($firstName);
+            $patient->setAddress($address);
             $user->addPatient($patient);
             $manager->persist($patient);
         }

@@ -56,10 +56,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     private ?string $oldPassword = null;
 
-    #[ORM\OneToOne(targetEntity: Address::class)]
-    #[ORM\JoinColumn(name: 'address_id', referencedColumnName: 'id')]
-    private ?Address $address = null;
-
     /**
      * @var Collection<int, Patient>
      */
@@ -141,15 +137,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         return $this;
     }
 
-    public function getAddress(): ?Address
-    {
-        return $this->address;
-    }
-
-    public function setAddress(Address $address): void {
-        $this->address = $address;
-    }
-
     public function setPlainPassword(?string $plainPassword): void {
         $this->plainPassword = $plainPassword;
     }
@@ -168,8 +155,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     public function getVisible(): array
     {
+        /** @var Patient */
+        $patient = $this->patients->first();
         return ['email' => $this->email,
-            'address' => $this->getAddress()?->getVisible()
+            'patient' => $patient->getVisible()
         ];
     }
 
