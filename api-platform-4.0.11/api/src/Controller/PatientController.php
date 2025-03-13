@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PatientController implements ControllerInterface
 {
@@ -73,11 +72,22 @@ class PatientController implements ControllerInterface
         return new JsonResponse(status: 201);
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+
     public function delete(int $id): JsonResponse
     {
-        /** @var Patient */
+        if(!$this->jwtSecurity->isGranted('ROLE_ADMIN'))
+        {
+            return new JsonResponse(status: 403);
+        }
+
+        /** @var ?Patient */
         $patient = $this->patientRepository->findOneBy(['id' => $id]);
+
+        if(!$patient instanceof Patient)
+        {
+            return new JsonResponse(status:  '404');
+        }
+
         $patient->setFirstName('firstName'.$patient->getId());
         $patient->setLastName('lastName'.$patient->getId());
         $patient->setPhone('');
@@ -141,6 +151,12 @@ class PatientController implements ControllerInterface
         {
             /** @var ?Patient */
             $patient = $this->patientRepository->findOneBy(['id' => $id]);
+
+            if(!$patient instanceof Patient)
+            {
+                return new JsonResponse(status: 404);
+            }
+
             return new JsonResponse(['patient' => $patient->getVisible()]);
         }
 
