@@ -9,5 +9,6 @@ return function (RoutingConfigurator $routes) {
     $routes->import('./patient.php');
     $routes->import('./user.php');
     $routes->import('./address.php');
+    $routes->import('./contact.php');
 };
 
