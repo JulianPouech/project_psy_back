@@ -22,7 +22,7 @@ class AuthenticationSuccessListener
         $cookie = Cookie::create('Authorization',
             $data['token'],
             sameSite: "strict",
-            httpOnly:false,
+            httpOnly:true,
     );
         $event->getResponse()->headers->setCookie($cookie);
     }
