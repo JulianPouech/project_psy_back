@@ -62,6 +62,8 @@ services:
       - database
     ports:
       - 8080:80
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
   mailhog:
     image: mailhog/mailhog
     ports:
@@ -78,6 +80,7 @@ volumes:
   caddy_data:
   caddy_config:
   database_data:
+  pgadmin_data:
 ###> doctrine/doctrine-bundle ###
 ###< doctrine/doctrine-bundle ###
 ###> symfony/mercure-bundle ###

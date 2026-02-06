@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class ContactType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('lastName', TextType::class, [
                 'constraints' => [

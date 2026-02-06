@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Address;
 use App\Entity\Patient;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -31,10 +33,10 @@ class PatientRepository extends ServiceEntityRepository
             ->leftJoin('p.users', 'u')
             ->where('u.id = :user_id')
             ->andWhere('p.id = :patient_id')
-            ->setParameters([
-                'user_id' => $userId,
-                'patient_id' => $id
-            ])
+            ->setParameters(new ArrayCollection([
+                new Parameter('user_id',$userId),
+                new Parameter('patient_id',$id),
+            ]))
             ->getQuery()
             ->getOneOrNullResult()
         ;
