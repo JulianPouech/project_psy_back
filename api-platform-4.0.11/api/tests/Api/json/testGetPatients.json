@@ -1,0 +1,40 @@
+{
+	"patients": [
+		{
+			"id": 21,
+			"firstName": "Gerald",
+			"lastName": "robotnik",
+			"address": {
+				"city": "cityName1",
+				"address": "addressName1",
+				"postalCode": "codePostal1",
+				"country": ""
+			},
+			"phone": null
+		},
+		{
+			"id": 22,
+			"firstName": "Ivo",
+			"lastName": "robotnik",
+			"address": {
+				"city": "cityName1",
+				"address": "addressName1",
+				"postalCode": "codePostal1",
+				"country": ""
+			},
+			"phone": null
+		},
+		{
+			"id": 23,
+			"firstName": "Maria",
+			"lastName": "robotnik",
+			"address": {
+				"city": "cityName1",
+				"address": "addressName1",
+				"postalCode": "codePostal1",
+				"country": ""
+			},
+			"phone": null
+		}
+	]
+}
